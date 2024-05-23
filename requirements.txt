@@ -1,0 +1,4 @@
+flask~=2.0.2
+python-3.7
+python-telegram-bot==13.7
+python-dotenv

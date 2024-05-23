@@ -1,0 +1,14 @@
+{
+  "name": "your-bot-name",
+  "version": "1.0.0",
+  "description": "Your Telegram Bot",
+  "main": "server.py",
+  "scripts": {
+    "start": "./start.sh"
+  },
+  "dependencies": {
+    "flask": "^2.0.2",
+    "python-telegram-bot": "^19.3"
+  },
+  "telegram_bot_token": "6532327533:AAGjS66o-57bYtZKli-nYetr3MYn2W_B1Lk"
+}
