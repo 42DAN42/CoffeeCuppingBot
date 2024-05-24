@@ -1,4 +1,4 @@
-# Coffee Rating Bot
+# Coffee Cupping Bot
 
 ![Coffee](https://yourimageurl.com/coffee.jpg)
 
@@ -6,10 +6,9 @@
 Coffee Rating Bot — это бот для оценки кофе, который позволяет пользователям оценивать различные виды кофе и оставлять заметки. Бот предоставляет простой интерфейс для ввода оценок и записей о каждом дегустированном напитке.
 
 ## Функциональность
-- **Оценка кофе:** Пользователи могут оценивать разные виды кофейных напитков, по шкале от 1 до 5.
+- **Оценка кофе:** Пользователи могут оценивать разные виды кофейных напитков, по шкале от 1 до 10.
 - **Добавление заметок:** Возможность оставлять заметки после оценки каждого напитка.
 - **Интерактивный интерфейс:** Удобный и простой в использовании интерфейс для ввода оценок и заметок.
-
 
 ### Установка зависимостей
 Для установки необходимых зависимостей выполните следующую команду:
@@ -22,6 +21,8 @@ pip install -r requirements.txt
 ```bash
 python bot.py
 ```
+
+
 
 После запуска бот будет готов к использованию. Введите команду `/rate_coffee`, чтобы начать процесс оценки.
 
@@ -54,12 +55,4 @@ python bot.py
 - GitHub: https://github.com/42DAN42
 - Telegram: @I_DAN_I
 
-![GitHub last commit](https://img.shields.io/github/last-commit/yourusername/coffeeratingbot)
-![GitHub issues](https://img.shields.io/github/issues/yourusername/coffeeratingbot)
-![GitHub stars](https://img.shields.io/github/stars/yourusername/coffeeratingbot)
-```
 
-### Примечания:
-1. Замените `https://yourimageurl.com/coffee.jpg` на действительный URL изображения для заголовка (опционально).
-2. Замените `yourusername` на ваше имя пользователя GitHub и `coffeeratingbot` на название вашего репозитория.
-3. Обновите контактные данные на ваши реальные данные.
