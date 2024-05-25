@@ -291,4 +291,4 @@ class CoffeeCuppingBot:
 
 # Вместо "YOUR_TELEGRAM_BOT_TOKEN" укажите токен вашего бота
 if __name__ == "__main__":
-    bot = CoffeeCuppingBot("6532327533:AAGjS66o-57bYtZKli-nYetr3MYn2W_B1Lk")
+    bot = CoffeeCuppingBot("YOUR_TELEGRAM_BOT_TOKEN")
