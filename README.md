@@ -51,7 +51,7 @@ python bot.py
 ## Контакты
 Если у вас есть вопросы или предложения, свяжитесь с нами:
 
-- Email: ielektronik98@gmail.com
+- Email: 42dannymarshall@gmail.com
 - GitHub: https://github.com/42DAN42
 - Telegram: @I_DAN_I
 
