@@ -1,13 +1,14 @@
-# FSMachines.py
 from aiogram.fsm.state import StatesGroup, State
-
 
 class CandidateState(StatesGroup):
     SelectLanguage = State()
 
+class AppState(StatesGroup):
+    Menu = State()       # Основная страница (главное меню)
+    History = State()    # Этап просмотра истории каппингов
 
 class CuppingState(StatesGroup):
-    # Rate coffee parameters:
+    # Этапы оценки вкусовых характеристик
     RatingFragrance = State()
     RatingAroma = State()
     RatingFlavor = State()
@@ -16,7 +17,7 @@ class CuppingState(StatesGroup):
     RatingSweetness = State()
     RatingMouthfeel = State()
     RatingOverall = State()
-    # Textual inputs:
+    # Этапы текстового ввода
     BrewingMethod = State()
     BeanName = State()
     Note = State()
