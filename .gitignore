@@ -1,0 +1,14 @@
+env
+.idea
+/__pycache__
+*.sqlite3
+config.py
+log.log
+production.log
+answer.log
+1test.py
+config.ini
+venv
+.env
+/Test_&_Scrap
+/.DS_Store
