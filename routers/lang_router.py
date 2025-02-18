@@ -1,4 +1,3 @@
-# routers/lang_router.py
 from aiogram import Router
 from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
@@ -8,6 +7,7 @@ from bot_dictionary import texts
 from loguru import logger
 
 lang_router = Router()
+
 
 @lang_router.message()
 async def language_handler(msg: Message, state: FSMContext):

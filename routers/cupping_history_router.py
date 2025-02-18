@@ -1,4 +1,3 @@
-# routers/cupping_history_router.py
 from aiogram import Router, types
 from aiogram.types import CallbackQuery, Message
 from aiogram.fsm.context import FSMContext
@@ -11,7 +10,10 @@ import datetime
 
 cupping_history_router = Router()
 
-@cupping_history_router.message(lambda msg: msg.text in [texts["EN"]["menu_history"], texts["RU"]["menu_history"], texts["UA"]["menu_history"]])
+
+@cupping_history_router.message(
+    lambda msg: msg.text in [texts["EN"]["menu_history"], texts["RU"]["menu_history"], texts["UA"]["menu_history"]]
+)
 async def show_history(msg: Message, state: FSMContext):
     data = await state.get_data()
     lang = data.get("language", "EN")
@@ -23,6 +25,7 @@ async def show_history(msg: Message, state: FSMContext):
         items = result.all()
     markup = Tools.get_history_markup(items, lang)
     await msg.answer("History:", reply_markup=markup)
+
 
 @cupping_history_router.callback_query(lambda c: c.data.startswith("history_"))
 async def history_detail(callback: CallbackQuery, state: FSMContext):
@@ -59,14 +62,17 @@ async def history_detail(callback: CallbackQuery, state: FSMContext):
         bean=cupping.bean_name,
         note=cupping.note
     )
-    markup = Tools.get_menu_markup(lang)
-    btn_hist = types.InlineKeyboardButton(text=texts[lang]["history_button"], callback_data="to_history")
-    inline_kb = types.InlineKeyboardMarkup().add(
-        types.InlineKeyboardButton(text=texts[lang]["menu"], callback_data="to_menu"),
-        btn_hist
-    )
+
+    # Явно заполняем параметр inline_keyboard.
+    inline_kb = types.InlineKeyboardMarkup(inline_keyboard=[
+        [
+            types.InlineKeyboardButton(text=texts[lang]["menu"], callback_data="to_menu"),
+            types.InlineKeyboardButton(text=texts[lang]["history_button"], callback_data="to_history")
+        ]
+    ])
     await callback.message.edit_text(final_text, reply_markup=inline_kb)
     await callback.answer()
+
 
 @cupping_history_router.callback_query(lambda c: c.data in ["to_menu", "to_history"])
 async def history_nav(callback: CallbackQuery, state: FSMContext):

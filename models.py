@@ -1,16 +1,16 @@
-# models.py
-import datetime
+from datetime import datetime, timezone
 from sqlalchemy import Column, Integer, String, Float, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
+
 
 class Cupping(Base):
     __tablename__ = "cuppings"
 
     id = Column(Integer, primary_key=True, index=True)
     telegram_user_id = Column(Integer, index=True)
-    dt = Column(DateTime, default=datetime.datetime.utcnow)
+    dt = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     fragrance = Column(Float)
     aroma = Column(Float)
     flavor = Column(Float)

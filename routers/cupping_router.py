@@ -1,4 +1,3 @@
-# routers/cupping_router.py
 import datetime
 from aiogram import Router, types
 from aiogram.types import CallbackQuery, Message
@@ -13,7 +12,7 @@ from models import Cupping
 
 cupping_router = Router()
 
-# Определяем порядок и соответствие параметров, а также состояния перехода.
+# Определяем порядок параметров и состояний.
 PARAMS_SEQUENCE = [
     ("fragrance", CuppingState.RatingFragrance, CuppingState.RatingAroma),
     ("aroma", CuppingState.RatingAroma, CuppingState.RatingFlavor),
@@ -25,13 +24,15 @@ PARAMS_SEQUENCE = [
     ("overall", CuppingState.RatingOverall, CuppingState.BrewingMethod),
 ]
 
+
 def get_param_info(state_name: str, lang: str):
     for param, curr_state, next_state in PARAMS_SEQUENCE:
         if curr_state == state_name:
             return param, next_state, parameter_names[lang][param]
     return None, None, None
 
-@cupping_router.callback_query(lambda c: c.data.isdigit() or c.data=="back")
+
+@cupping_router.callback_query(lambda c: c.data.isdigit() or c.data == "back")
 async def rating_callback_handler(callback: CallbackQuery, state: FSMContext):
     data = await state.get_data()
     lang = data.get("language", "EN")
@@ -49,7 +50,7 @@ async def rating_callback_handler(callback: CallbackQuery, state: FSMContext):
             for idx, (param, curr_state, _) in enumerate(PARAMS_SEQUENCE):
                 if curr_state == current_state:
                     if idx > 0:
-                        prev_param, _, prev_param_name = PARAMS_SEQUENCE[idx - 1]
+                        prev_param, _, _ = PARAMS_SEQUENCE[idx - 1]
                         prev_state = PARAMS_SEQUENCE[idx - 1][1]
                         await state.set_state(prev_state)
                         prompt = texts[lang]["rate_parameter"].format(param=parameter_names[lang][prev_param])
@@ -83,41 +84,17 @@ async def rating_callback_handler(callback: CallbackQuery, state: FSMContext):
         return
     else:
         await state.set_state(next_state)
+        next_param_display = None
         for par, st, _ in PARAMS_SEQUENCE:
             if st == next_state:
                 next_param_display = parameter_names[lang][par]
                 break
+        if next_param_display is None:
+            next_param_display = "Unknown parameter"
         prompt = texts[lang]["rate_parameter"].format(param=next_param_display)
         await callback.message.edit_text(prompt, reply_markup=Tools.get_rating_keyboard(lang))
         await callback.answer()
 
-@cupping_router.message(CuppingState.BrewingMethod)
-async def brewing_method_handler(msg: Message, state: FSMContext):
-    data = await state.get_data()
-    lang = data.get("language", "EN")
-    if msg.text == texts[lang]["back"]:
-        await state.set_state(CuppingState.RatingOverall)
-        prompt = texts[lang]["rate_parameter"].format(param=parameter_names[lang]["overall"])
-        await msg.answer(prompt, reply_markup=Tools.get_rating_keyboard(lang))
-        return
-    await state.update_data(brewing_method=msg.text)
-    await state.set_state(CuppingState.BeanName)
-    prompt = texts[lang]["bean_name"]
-    await msg.answer(prompt, reply_markup=Tools.get_note_back_markup(lang))
-
-@cupping_router.message(CuppingState.BeanName)
-async def bean_name_handler(msg: Message, state: FSMContext):
-    data = await state.get_data()
-    lang = data.get("language", "EN")
-    if msg.text == texts[lang]["back"]:
-        await state.set_state(CuppingState.BrewingMethod)
-        prompt = texts[lang]["brewing_method"]
-        await msg.answer(prompt, reply_markup=Tools.get_note_back_markup(lang))
-        return
-    await state.update_data(bean_name=msg.text)
-    await state.set_state(CuppingState.Note)
-    prompt = texts[lang]["note"]
-    await msg.answer(prompt, reply_markup=Tools.get_note_back_markup(lang))
 
 @cupping_router.message(CuppingState.Note)
 async def note_handler(msg: Message, state: FSMContext):
@@ -137,7 +114,6 @@ async def note_handler(msg: Message, state: FSMContext):
     average = sum(ratings) / len(ratings)
     await state.update_data(avg=average)
     async with async_session() as session:
-        from models import Cupping
         cupping = Cupping(
             telegram_user_id=msg.from_user.id,
             fragrance=data.get("fragrance"),
@@ -162,7 +138,7 @@ async def note_handler(msg: Message, state: FSMContext):
     ])
     final_text = texts[lang]["final_summary"].format(
         id=cupping_id,
-        dt=datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M"),
+        dt=datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M"),
         params=params_text,
         avg=average,
         method=data.get("brewing_method"),
@@ -171,3 +147,33 @@ async def note_handler(msg: Message, state: FSMContext):
     )
     await msg.answer(final_text, reply_markup=Tools.get_menu_markup(lang))
     await state.clear()
+
+
+@cupping_router.message(CuppingState.BrewingMethod)
+async def brewing_method_handler(msg: Message, state: FSMContext):
+    data = await state.get_data()
+    lang = data.get("language", "EN")
+    if msg.text == texts[lang]["back"]:
+        await state.set_state(CuppingState.RatingOverall)
+        prompt = texts[lang]["rate_parameter"].format(param=parameter_names[lang]["overall"])
+        await msg.answer(prompt, reply_markup=Tools.get_rating_keyboard(lang))
+        return
+    await state.update_data(brewing_method=msg.text)
+    await state.set_state(CuppingState.BeanName)
+    prompt = texts[lang]["bean_name"]
+    await msg.answer(prompt, reply_markup=Tools.get_note_back_markup(lang))
+
+
+@cupping_router.message(CuppingState.BeanName)
+async def bean_name_handler(msg: Message, state: FSMContext):
+    data = await state.get_data()
+    lang = data.get("language", "EN")
+    if msg.text == texts[lang]["back"]:
+        await state.set_state(CuppingState.BrewingMethod)
+        prompt = texts[lang]["brewing_method"]
+        await msg.answer(prompt, reply_markup=Tools.get_note_back_markup(lang))
+        return
+    await state.update_data(bean_name=msg.text)
+    await state.set_state(CuppingState.Note)
+    prompt = texts[lang]["note"]
+    await msg.answer(prompt, reply_markup=Tools.get_note_back_markup(lang))

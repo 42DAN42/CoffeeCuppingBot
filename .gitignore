@@ -12,3 +12,5 @@ venv
 .env
 /Test_&_Scrap
 /.DS_Store
+bot.log
+cupping.db

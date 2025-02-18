@@ -5,7 +5,9 @@ from loguru import logger
 from db import init_db
 from routers import start_router, lang_router, menu_router, cupping_router, cupping_history_router
 
-TOKEN = "YOUR_TELEGRAM_BOT_TOKEN"  # Replace with your actual token or use env variables
+from utils import parse_env
+
+TOKEN = parse_env("token")
 
 
 async def main():

@@ -1,4 +1,3 @@
-# routers/start_router.py
 from aiogram import Router
 from aiogram.filters import Command
 from aiogram.types import Message
@@ -8,6 +7,7 @@ from bot_dictionary import texts
 from loguru import logger
 
 start_router = Router()
+
 
 @start_router.message(Command("start"))
 async def start_handler(msg: Message, state):
