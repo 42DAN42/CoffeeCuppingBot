@@ -1,12 +1,5 @@
-# tools.py
-from aiogram.types import (
-    InlineKeyboardButton,
-    InlineKeyboardMarkup,
-    ReplyKeyboardMarkup,
-    KeyboardButton
-)
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 from bot_dictionary import texts
-
 
 class Tools:
     @classmethod
@@ -32,28 +25,32 @@ class Tools:
 
     @classmethod
     def get_rating_keyboard(cls, lang: str):
-        # Формируем список кнопок для оценок от 1 до 10
-        number_buttons = [InlineKeyboardButton(text=str(i), callback_data=str(i)) for i in range(1, 11)]
-        # Разбиваем их на два ряда по 5 кнопок
-        row1 = number_buttons[0:5]
-        row2 = number_buttons[5:10]
+        """
+        Создаем клавиатуру с кнопками от 1 до 10, размещёнными в 2 ряда по 5 кнопок,
+        а также ряд с кнопкой «Back».
+        """
+        buttons = [KeyboardButton(text=str(i)) for i in range(1, 11)]
+        row1 = buttons[:5]
+        row2 = buttons[5:]
         back_text = texts.get(lang, {}).get("back", "Back")
-        row3 = [InlineKeyboardButton(text=back_text, callback_data="back")]
-        # Явно передаем двумерный список в inline_keyboard
-        keyboard = InlineKeyboardMarkup(inline_keyboard=[row1, row2, row3], row_width=5)
-        return keyboard
+        row3 = [KeyboardButton(text=back_text)]
+        return ReplyKeyboardMarkup(keyboard=[row1, row2, row3],
+                                   resize_keyboard=True)
 
     @classmethod
     def get_history_markup(cls, items: list, lang: str):
-        # items: список кортежей (cupping_id, brewing_method, avg)
+        """
+        Здесь оставляем инлайн‑клавиатуру для истории каппинга (без изменений).
+        items – список кортежей: (cupping_id, brewing_method, avg)
+        """
+        from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
         rows = []
         for item in items:
             btn_text = f"#{item[0]} | {item[1]} | {item[2]:.1f}"
             rows.append([InlineKeyboardButton(text=btn_text, callback_data=f"history_{item[0]}")])
         menu_text = texts.get(lang, {}).get("menu", "Menu")
         rows.append([InlineKeyboardButton(text=menu_text, callback_data="to_menu")])
-        keyboard = InlineKeyboardMarkup(inline_keyboard=rows)
-        return keyboard
+        return InlineKeyboardMarkup(inline_keyboard=rows)
 
     @classmethod
     def get_note_back_markup(cls, lang: str):
